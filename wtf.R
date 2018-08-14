@@ -16,6 +16,10 @@ read.table
 UseMethod
 getS3method
 
+# You can assign directly to string literals and it'll assign to a variable
+# with that name.
+"x" <- 5
+
 # functions return the value of the last statement implicitly.
 (function(){return(5)})() # 5
 (function(){5})() # 5
@@ -114,3 +118,4 @@ F <- FALSE # back to sanity
 # TODO named/number indexing weirdness, like selecting row "3" versus 3.
 
 # TODO: copy-on-write behavior
+
