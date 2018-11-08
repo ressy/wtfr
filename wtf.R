@@ -1,24 +1,44 @@
+# Basic Syntax and Naming -------------------------------------------------
+
+
 # The period character doesn't inherently have a special meaning, generally
 # speaking.
 x..y... <- 5
 
-# But ... is a keyword in R, like "if" or "for".
+# But ... is a reserved word in R, like "if" or "for".
 ?'...'
 
 # One other thing: S3 methods use periods in function names for special
 # purposes.
 plot.foo.bar <- function() {}
-getS3method("plot", "foo.bar") 
+getS3method("plot", "foo.bar")
 
 # The base language is inconsistent between names_with_underscores,
-# names.with.periods, and camelCaseNames (or CamelCaseNames).  Examples:
-read.table
-UseMethod
-getS3method
+# names.with.periods, and camelCaseNames (or CamelCaseNames).
+?read.table
+?UseMethod
+?getS3method
 
 # You can assign directly to string literals and it'll assign to a variable
 # with that name.
 "x" <- 5
+
+# TRUE and FALSE are reserved keywords.  T and F are not!  They're just
+# variables pre-set to TRUE and FALSE that tempt you to rely on them because
+# they're just one character.  (Why, R?? Why do you do these things to us?)
+#
+#> ?`TRUE`
+# "TRUE and FALSE are reserved words denoting logical constants in the R
+# language, whereas T and F are global variables whose initial values set to
+# these"
+F <- TRUE # totally allowed
+if (F) { print("logical value was true") }
+F <- FALSE # back to sanity
+# Thanks eclarke for pointing this out.
+
+
+# Assignment and Return Values --------------------------------------------
+
 
 # functions return the value of the last statement implicitly.
 (function(){return(5)})() # 5
@@ -27,7 +47,7 @@ getS3method
 # consisting of a single statement.
 (function()5)() # 5
 
-# note that assignments themselves evaulate to the value assigned.
+# note that assignments themselves evaluate to the value assigned.
 x <- (y <- 5) # x is 5
 (function()x<-5)() # 5
 
@@ -46,10 +66,14 @@ assign_when_used <- function(x, y=A) {
 }
 assign_when_used(5)
 
-# You can index things that look like scalars too; nearly everything is a
-# vector quantity in R.   (The only thing I've found that doesn't follow that
-# is a function.  Stored function calls, on the other hand, behave like lists,
-# and so even they are subsettable.)
+
+# Vectorized Everything ---------------------------------------------------
+
+
+# You can index things that look like scalars.  Nearly everything is a vector
+# quantity in R.   (The only thing I've found that doesn't follow that is a
+# function.  Stored function calls, on the other hand, behave like lists, and so
+# even they are subsettable.)
 1[1] # 1
 1[2] # NA
 # Note that this can behave in weird ways for strings.
@@ -58,40 +82,32 @@ length(c("string1")) # just 1 string
 length("string1") # still just 1 string!
 # use nchar() for string length
 nchar("string1")
-# Note the implicit coercion happening with nchar.  the number of characters in
+# Note the implicit coercion happening with nchar. The number of characters in
 # an NA object is two, FALSE is five, and TRUE is four!
 nchar(NA)
+# (Somewhere between R 3.2 and 3.4 nchar(NA) became NA instead of 2, but the
+# others remained.)
 nchar(F)
 nchar(T)
-# But NULL is zero-length, so you get a zero-length vector back. 
+# But NULL is zero-length, so you get a zero-length integer vector back. 
 nchar(NULL) # "integer(0)" is an empty vector of length values.
-nchar("") # "0" is not the same thing!
+nchar("") # "0" is not the same return value!  That has length of 1.
 
-# Operators are functions; references to them can be "escaped" with backticks
-# to refer to the thing in itself (as opposed to quote marks to refer to a
-# string
+
+# Operators ---------------------------------------------------------------
+
+
+# Operators are functions; references to them can be "escaped" with backticks to
+# refer to the thing in itself (as opposed to quote marks to refer to a string
 # literal)
 print("+")
 print(`+`)
-#> print("+")
-#[1] "+"
-#> print(`+`)
-#function (e1, e2)  .Primitive("+")
 1 + 2
 (`+`)(1,2)
 
-# TRUE and FALSE are reserved keywords.  T and F are not!  They're just
-# variables pre-set to TRUE and FALSE that tempt you to rely on them because
-# they're just one character.  (Why, R?? Why do you do these things to us?)
-#
-#> ?`TRUE`
-# "TRUE and FALSE are reserved words denoting logical constants in the R
-# language, whereas T and F are global variables whose initial values set to
-# these"
-F <- TRUE # totally allowed
-if (F) { print("logical value was true") }
-F <- FALSE # back to sanity
-# Thanks Erik for pointing this out.
+
+# Other Things ------------------------------------------------------------
+
 
 # TODO: column name weirdness
 #> x <- data.frame(a=c(1,2,3), a=c(4,5,6), a=c(7,8,9), check.names=F)
